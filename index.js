@@ -102,18 +102,47 @@ async function run() {
       console.log("updating", id);
       res.json(result);
     });
-    // User Services
+    // Get User Services
     app.get("/usersServices", async (req, res) => {
       const cursor = usersServicesCollection.find({});
       const services = await cursor.toArray();
       res.send(services);
     });
+    // Post User Services
     app.post("/usersServices", async (req, res) => {
       const newUserService = req.body;
       const result = await usersServicesCollection.insertOne(newUserService);
       console.log("got new user", req.body);
       console.log("added user", result);
       res.json(result);
+    });
+    // Delete User Services
+    app.delete("/usersServices/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await usersServicesCollection.deleteOne(query);
+      console.log("deleting user Service with id ", result);
+      res.json(result);
+      //Update Users
+      app.put("/usersServices/:id", async (req, res) => {
+        const id = req.params.id;
+        const updatedUser = req.body;
+        const filter = { _id: ObjectId(id) };
+        const options = { upsert: true };
+        const updateDoc = {
+          $set: {
+            name: updatedUser.name,
+            email: updatedUser.email,
+          },
+        };
+        const result = await usersServicesCollection.updateOne(
+          filter,
+          updateDoc,
+          options
+        );
+        console.log("updating", id);
+        res.json(result);
+      });
     });
   } finally {
     // await client.close();
