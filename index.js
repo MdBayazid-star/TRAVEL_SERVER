@@ -23,6 +23,7 @@ async function run() {
     // Collection
     const servicesCollection = database.collection("services");
     const usersCollection = database.collection("users");
+    const usersServicesCollection = database.collection("usersServices");
     // Get API
     app.get("/services", async (req, res) => {
       const cursor = servicesCollection.find({});
@@ -36,14 +37,14 @@ async function run() {
       const service = await servicesCollection.findOne(query);
       res.json(service);
     });
-    // Post API
+    // Post Services
     app.post("/services", async (req, res) => {
       const service = req.body;
       const result = await servicesCollection.insertOne(service);
       console.log("hit the post api", service, result);
       res.json(result);
     });
-    // delete Api
+    // Delete Services
     app.delete("/service/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -99,6 +100,19 @@ async function run() {
         options
       );
       console.log("updating", id);
+      res.json(result);
+    });
+    // User Services
+    app.get("/usersServices", async (req, res) => {
+      const cursor = usersServicesCollection.find({});
+      const services = await cursor.toArray();
+      res.send(services);
+    });
+    app.post("/users", async (req, res) => {
+      const newUser = req.body;
+      const result = await usersCollection.insertOne(newUser);
+      console.log("got new user", req.body);
+      console.log("added user", result);
       res.json(result);
     });
   } finally {
