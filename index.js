@@ -108,9 +108,9 @@ async function run() {
       const services = await cursor.toArray();
       res.send(services);
     });
-    app.post("/users", async (req, res) => {
-      const newUser = req.body;
-      const result = await usersCollection.insertOne(newUser);
+    app.post("/usersServices", async (req, res) => {
+      const newUserService = req.body;
+      const result = await usersServicesCollection.insertOne(newUserService);
       console.log("got new user", req.body);
       console.log("added user", result);
       res.json(result);
